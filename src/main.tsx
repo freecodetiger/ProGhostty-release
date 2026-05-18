@@ -64,19 +64,24 @@ function useScrollPossession() {
 
       if (reduceMotion.matches) {
         setMotionVar("--hero-depth", 0);
+        setMotionVar("--haunt-progress", 0);
         setMotionVar("--parade-progress", 0);
         setMotionVar("--possession-progress", 0);
         return;
       }
 
       const heroDepth = clamp(window.scrollY / Math.max(window.innerHeight * 0.82, 1));
+      const hauntProgress = clamp(window.scrollY / Math.max(window.innerHeight * 2.2, 1));
       const parade = document.querySelector<HTMLElement>(".parade-section");
       const download = document.querySelector<HTMLElement>(".download-section");
 
       let paradeProgress = 0;
       if (parade) {
         const rect = parade.getBoundingClientRect();
-        paradeProgress = clamp((window.innerHeight - rect.top) / (window.innerHeight + rect.height));
+        const rawProgress = clamp(
+          (window.innerHeight * 1.42 - rect.top) / Math.max(window.innerHeight * 0.92, 1)
+        );
+        paradeProgress = 1 - Math.pow(1 - rawProgress, 2.6);
       }
 
       let possessionProgress = 0;
@@ -86,6 +91,7 @@ function useScrollPossession() {
       }
 
       setMotionVar("--hero-depth", heroDepth);
+      setMotionVar("--haunt-progress", hauntProgress);
       setMotionVar("--parade-progress", paradeProgress);
       setMotionVar("--possession-progress", possessionProgress);
     };
@@ -155,6 +161,11 @@ function App() {
 
   return (
     <main>
+      <div className="possession-field" aria-hidden="true">
+        <GhostGlyph className="possession-ghost possession-ghost-left" />
+        <GhostGlyph className="possession-ghost possession-ghost-center" />
+        <GhostGlyph className="possession-ghost possession-ghost-right" />
+      </div>
       <section className="hero" id="top">
         <GhostFormation className="hero-procession" count={35} />
         <nav className="nav" aria-label="Primary navigation">

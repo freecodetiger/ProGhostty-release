@@ -15,6 +15,7 @@
   --accent-dim: rgba(221, 231, 255, 0.28);
   --page-max: 1180px;
   --hero-depth: 0;
+  --haunt-progress: 0;
   --parade-progress: 0;
   --possession-progress: 0;
   font-family:
@@ -83,8 +84,55 @@ main {
   isolation: isolate;
 }
 
+.possession-field {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: calc(0.42 + (var(--haunt-progress) * 0.32));
+}
+
+.possession-ghost {
+  position: absolute;
+  background: rgba(245, 245, 247, 0.42);
+  filter: blur(calc((1 - var(--haunt-progress)) * 1.6px));
+  transform-origin: center bottom;
+}
+
+.possession-ghost-left {
+  left: -8vw;
+  top: 12vh;
+  opacity: calc(0.05 + (var(--haunt-progress) * 0.09));
+  transform:
+    rotate(-12deg)
+    translateY(calc((1 - var(--haunt-progress)) * 110px))
+    scale(calc(2.8 + (var(--haunt-progress) * 2.8)));
+}
+
+.possession-ghost-center {
+  left: 50%;
+  bottom: -24vh;
+  opacity: calc(0.03 + (var(--haunt-progress) * 0.08));
+  transform:
+    translateX(-50%)
+    translateY(calc((1 - var(--haunt-progress)) * 160px))
+    scale(calc(2.1 + (var(--haunt-progress) * 3.6)));
+}
+
+.possession-ghost-right {
+  right: -8vw;
+  top: 16vh;
+  opacity: calc(0.05 + (var(--haunt-progress) * 0.09));
+  transform:
+    rotate(12deg)
+    translateY(calc((1 - var(--haunt-progress)) * 110px))
+    scale(calc(2.8 + (var(--haunt-progress) * 2.8)));
+}
+
 .hero {
   position: relative;
+  z-index: 2;
   min-height: 100svh;
   overflow: hidden;
   padding: 28px 24px 96px;
@@ -341,6 +389,8 @@ p {
 }
 
 .section {
+  position: relative;
+  z-index: 2;
   width: min(100% - 48px, var(--page-max));
   margin: 0 auto;
   padding: 116px 0;
@@ -602,6 +652,7 @@ pre {
 
 .parade-section {
   position: relative;
+  z-index: 2;
   display: grid;
   place-items: center;
   min-height: 100svh;
@@ -618,7 +669,7 @@ pre {
   z-index: 1;
   pointer-events: none;
   content: "";
-  opacity: calc(var(--parade-progress) * 0.62);
+  opacity: calc(var(--parade-progress) * 0.72);
   background:
     radial-gradient(circle at 50% 45%, transparent 0 18rem, rgba(0, 0, 0, 0.38) 32rem),
     linear-gradient(90deg, rgba(255, 255, 255, 0.06), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.06));
@@ -627,17 +678,17 @@ pre {
 
 .parade-procession {
   opacity: 0.96;
-  filter: blur(calc((1 - var(--parade-progress)) * 1px));
+  filter: blur(calc((1 - var(--parade-progress)) * 0.75px));
   transform:
     perspective(900px)
-    rotateX(calc(58deg - (var(--parade-progress) * 18deg)))
-    translateY(calc(-18% + (var(--parade-progress) * 18%)))
-    scale(calc(1.08 + (var(--parade-progress) * 0.84)));
+    rotateX(calc(60deg - (var(--parade-progress) * 24deg)))
+    translateY(calc(-28% + (var(--parade-progress) * 36%)))
+    scale(calc(1.14 + (var(--parade-progress) * 1.14)));
   transform-origin: center top;
 }
 
 .parade-procession .formation-unit {
-  opacity: calc(0.08 + (var(--parade-progress) * 0.22));
+  opacity: calc(0.1 + (var(--parade-progress) * 0.28));
 }
 
 .parade-procession .formation-unit:nth-child(7n + 1),
@@ -658,8 +709,8 @@ pre {
 
 .parade-presser {
   position: absolute;
-  opacity: calc(var(--parade-progress) * 0.18);
-  filter: blur(calc((1 - var(--parade-progress)) * 1.2px));
+  opacity: calc(0.02 + (var(--parade-progress) * 0.26));
+  filter: blur(calc((1 - var(--parade-progress)) * 0.9px));
   transform-origin: center bottom;
 }
 
@@ -668,18 +719,18 @@ pre {
   bottom: -9vh;
   transform:
     rotate(-14deg)
-    translateY(calc((1 - var(--parade-progress)) * 120px))
-    scale(calc(3.2 + (var(--parade-progress) * 2.4)));
+    translateY(calc((1 - var(--parade-progress)) * 70px))
+    scale(calc(3.8 + (var(--parade-progress) * 3.1)));
 }
 
 .parade-presser-center {
   left: 48%;
   bottom: -15vh;
-  opacity: calc(var(--parade-progress) * 0.11);
+  opacity: calc(0.01 + (var(--parade-progress) * 0.18));
   transform:
     translateX(-50%)
-    translateY(calc((1 - var(--parade-progress)) * 180px))
-    scale(calc(2.4 + (var(--parade-progress) * 3.2)));
+    translateY(calc((1 - var(--parade-progress)) * 95px))
+    scale(calc(2.9 + (var(--parade-progress) * 4.1)));
 }
 
 .parade-presser-right {
@@ -687,8 +738,8 @@ pre {
   bottom: -9vh;
   transform:
     rotate(14deg)
-    translateY(calc((1 - var(--parade-progress)) * 120px))
-    scale(calc(3.2 + (var(--parade-progress) * 2.4)));
+    translateY(calc((1 - var(--parade-progress)) * 70px))
+    scale(calc(3.8 + (var(--parade-progress) * 3.1)));
 }
 
 .parade-copy {
@@ -764,6 +815,7 @@ pre {
 
 .download-section {
   position: relative;
+  z-index: 2;
   display: grid;
   place-items: center;
   min-height: 86svh;

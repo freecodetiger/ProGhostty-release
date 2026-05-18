@@ -78,8 +78,9 @@ Motion is intentionally restrained:
 
 - Main icon slow float.
 - Background ghost procession drifts by only a few pixels.
-- Scroll-driven depth writes `--hero-depth`, `--parade-progress`, and `--possession-progress` to CSS.
-- The Night Parade screen advances from distant formation to foreground possession ghosts pressing in from the edges.
+- Scroll-driven depth writes `--hero-depth`, `--haunt-progress`, `--parade-progress`, and `--possession-progress` to CSS.
+- A fixed global possession field starts on the first viewport so ghost pressure is present before the brand climax.
+- The Night Parade screen uses an earlier, faster progress curve so foreground possession ghosts press in as the section enters view.
 - The Download screen gets a restrained possession glow and forward motion as the CTA enters view.
 - Terminal cursor blinks in cold white.
 - Hover states are short and subtle.
