@@ -14,6 +14,9 @@
   --accent-cold: #dde7ff;
   --accent-dim: rgba(221, 231, 255, 0.28);
   --page-max: 1180px;
+  --hero-depth: 0;
+  --parade-progress: 0;
+  --possession-progress: 0;
   font-family:
     ui-sans-serif,
     -apple-system,
@@ -103,7 +106,7 @@ main {
     radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px),
     radial-gradient(circle at 70% 62%, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px);
   background-size: 140px 140px, 190px 190px;
-  opacity: 0.28;
+  opacity: calc(0.28 + (var(--possession-progress) * 0.2));
 }
 
 .nav {
@@ -489,7 +492,11 @@ p {
 .hero-procession {
   z-index: 0;
   opacity: 0.78;
-  transform: perspective(800px) rotateX(48deg) translateY(30px);
+  transform:
+    perspective(800px)
+    rotateX(calc(48deg + (var(--hero-depth) * 5deg)))
+    translateY(calc(30px - (var(--hero-depth) * 34px)))
+    scale(calc(1 + (var(--hero-depth) * 0.08)));
   transform-origin: center top;
 }
 
@@ -605,21 +612,91 @@ pre {
     #030303;
 }
 
+.parade-section::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  content: "";
+  opacity: calc(var(--parade-progress) * 0.62);
+  background:
+    radial-gradient(circle at 50% 45%, transparent 0 18rem, rgba(0, 0, 0, 0.38) 32rem),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.06));
+  transform: scale(calc(1.08 - (var(--parade-progress) * 0.08)));
+}
+
 .parade-procession {
   opacity: 0.96;
-  transform: perspective(900px) rotateX(55deg) translateY(-16%) scale(1.35);
+  filter: blur(calc((1 - var(--parade-progress)) * 1px));
+  transform:
+    perspective(900px)
+    rotateX(calc(58deg - (var(--parade-progress) * 18deg)))
+    translateY(calc(-18% + (var(--parade-progress) * 18%)))
+    scale(calc(1.08 + (var(--parade-progress) * 0.84)));
   transform-origin: center top;
 }
 
 .parade-procession .formation-unit {
-  opacity: 0.18;
+  opacity: calc(0.08 + (var(--parade-progress) * 0.22));
+}
+
+.parade-procession .formation-unit:nth-child(7n + 1),
+.parade-procession .formation-unit:nth-child(7n) {
+  transform:
+    translate(-50%, -50%)
+    scale(calc(var(--scale) + (var(--parade-progress) * 0.42)))
+    translateY(calc(var(--parade-progress) * 28px));
+}
+
+.parade-pressers {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.parade-presser {
+  position: absolute;
+  opacity: calc(var(--parade-progress) * 0.18);
+  filter: blur(calc((1 - var(--parade-progress)) * 1.2px));
+  transform-origin: center bottom;
+}
+
+.parade-presser-left {
+  left: -4vw;
+  bottom: -9vh;
+  transform:
+    rotate(-14deg)
+    translateY(calc((1 - var(--parade-progress)) * 120px))
+    scale(calc(3.2 + (var(--parade-progress) * 2.4)));
+}
+
+.parade-presser-center {
+  left: 48%;
+  bottom: -15vh;
+  opacity: calc(var(--parade-progress) * 0.11);
+  transform:
+    translateX(-50%)
+    translateY(calc((1 - var(--parade-progress)) * 180px))
+    scale(calc(2.4 + (var(--parade-progress) * 3.2)));
+}
+
+.parade-presser-right {
+  right: -4vw;
+  bottom: -9vh;
+  transform:
+    rotate(14deg)
+    translateY(calc((1 - var(--parade-progress)) * 120px))
+    scale(calc(3.2 + (var(--parade-progress) * 2.4)));
 }
 
 .parade-copy {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   max-width: 900px;
   text-align: center;
+  transform: translateY(calc(var(--parade-progress) * -18px));
 }
 
 .parade-copy p {
@@ -693,7 +770,9 @@ pre {
   overflow: hidden;
   padding: 112px 24px;
   text-align: center;
-  background: #030303;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(245, 245, 247, calc(var(--possession-progress) * 0.09)), transparent 22rem),
+    #030303;
 }
 
 .download-section img {
@@ -715,8 +794,12 @@ pre {
 
 .download-procession {
   z-index: 0;
-  opacity: 0.34;
-  transform: perspective(700px) rotateX(62deg) translateY(-26%) scale(1.08);
+  opacity: calc(0.26 + (var(--possession-progress) * 0.24));
+  transform:
+    perspective(700px)
+    rotateX(calc(62deg - (var(--possession-progress) * 16deg)))
+    translateY(calc(-26% + (var(--possession-progress) * 10%)))
+    scale(calc(1.08 + (var(--possession-progress) * 0.42)));
   transform-origin: center top;
 }
 

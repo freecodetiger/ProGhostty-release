@@ -78,6 +78,9 @@ Motion is intentionally restrained:
 
 - Main icon slow float.
 - Background ghost procession drifts by only a few pixels.
+- Scroll-driven depth writes `--hero-depth`, `--parade-progress`, and `--possession-progress` to CSS.
+- The Night Parade screen advances from distant formation to foreground possession ghosts pressing in from the edges.
+- The Download screen gets a restrained possession glow and forward motion as the CTA enters view.
 - Terminal cursor blinks in cold white.
 - Hover states are short and subtle.
 - `prefers-reduced-motion` disables practical motion.

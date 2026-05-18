@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 
@@ -48,6 +48,71 @@ const capabilities = [
   "Local-first history"
 ];
 
+function useScrollPossession() {
+  useEffect(() => {
+    const root = document.documentElement;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let frame = 0;
+
+    const clamp = (value: number) => Math.min(1, Math.max(0, value));
+    const setMotionVar = (name: string, value: number) => {
+      root.style.setProperty(name, value.toFixed(4));
+    };
+
+    const update = () => {
+      frame = 0;
+
+      if (reduceMotion.matches) {
+        setMotionVar("--hero-depth", 0);
+        setMotionVar("--parade-progress", 0);
+        setMotionVar("--possession-progress", 0);
+        return;
+      }
+
+      const heroDepth = clamp(window.scrollY / Math.max(window.innerHeight * 0.82, 1));
+      const parade = document.querySelector<HTMLElement>(".parade-section");
+      const download = document.querySelector<HTMLElement>(".download-section");
+
+      let paradeProgress = 0;
+      if (parade) {
+        const rect = parade.getBoundingClientRect();
+        paradeProgress = clamp((window.innerHeight - rect.top) / (window.innerHeight + rect.height));
+      }
+
+      let possessionProgress = 0;
+      if (download) {
+        const rect = download.getBoundingClientRect();
+        possessionProgress = clamp((window.innerHeight * 0.82 - rect.top) / window.innerHeight);
+      }
+
+      setMotionVar("--hero-depth", heroDepth);
+      setMotionVar("--parade-progress", paradeProgress);
+      setMotionVar("--possession-progress", possessionProgress);
+    };
+
+    const requestUpdate = () => {
+      if (frame) {
+        return;
+      }
+      frame = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    reduceMotion.addEventListener("change", requestUpdate);
+
+    return () => {
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+      }
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      reduceMotion.removeEventListener("change", requestUpdate);
+    };
+  }, []);
+}
+
 function GhostGlyph({ className = "" }: { className?: string }) {
   return (
     <span className={`ghost-glyph ${className}`} aria-hidden="true">
@@ -86,6 +151,8 @@ function GhostFormation({ count = 28, className = "" }: { count?: number; classN
 }
 
 function App() {
+  useScrollPossession();
+
   return (
     <main>
       <section className="hero" id="top">
@@ -200,6 +267,11 @@ Build complete`}</pre>
 
       <section className="parade-section" aria-labelledby="parade-title">
         <GhostFormation className="parade-procession" count={49} />
+        <div className="parade-pressers" aria-hidden="true">
+          <GhostGlyph className="parade-presser parade-presser-left" />
+          <GhostGlyph className="parade-presser parade-presser-center" />
+          <GhostGlyph className="parade-presser parade-presser-right" />
+        </div>
         <div className="parade-copy">
           <p className="kicker">百鬼终行</p>
           <h2 id="parade-title">Not a terminal. A procession.</h2>
