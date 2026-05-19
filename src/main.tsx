@@ -48,7 +48,16 @@ const capabilities = [
   "Local-first history"
 ];
 
-function useScrollPossession() {
+const sectionTimelines = [
+  { selector: ".hero", property: "--hero-progress" },
+  { selector: ".formation-section", property: "--formation-progress" },
+  { selector: ".workspace-section", property: "--workspace-progress" },
+  { selector: ".parade-section", property: "--parade-progress" },
+  { selector: ".foundation-section", property: "--foundation-progress" },
+  { selector: ".download-section", property: "--download-progress" }
+] as const;
+
+function useSectionTimelines() {
   useEffect(() => {
     const root = document.documentElement;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -58,52 +67,45 @@ function useScrollPossession() {
     const setMotionVar = (name: string, value: number) => {
       root.style.setProperty(name, value.toFixed(4));
     };
+    const smoothStep = (value: number) => value * value * (3 - 2 * value);
 
-    const update = () => {
+    const readSectionProgress = (selector: string, inputOffset = 0, inputScale = 1) => {
+      const element = document.querySelector<HTMLElement>(selector);
+      if (!element) {
+        return 0;
+      }
+
+      const rect = element.getBoundingClientRect();
+      const viewport = Math.max(window.innerHeight, 1);
+      const activeDistance = viewport + rect.height * 0.62;
+      const raw = (viewport * 0.88 - rect.top) / activeDistance;
+      return smoothStep(clamp((raw + inputOffset) * inputScale));
+    };
+
+    const render = () => {
       frame = 0;
 
       if (reduceMotion.matches) {
-        setMotionVar("--hero-depth", 0);
-        setMotionVar("--haunt-progress", 0);
-        setMotionVar("--parade-progress", 0);
-        setMotionVar("--possession-progress", 0);
+        sectionTimelines.forEach(({ property }) => {
+          setMotionVar(property, 0);
+        });
         return;
       }
 
-      const heroDepth = clamp(window.scrollY / Math.max(window.innerHeight * 0.82, 1));
-      const hauntProgress = clamp(window.scrollY / Math.max(window.innerHeight * 2.2, 1));
-      const parade = document.querySelector<HTMLElement>(".parade-section");
-      const download = document.querySelector<HTMLElement>(".download-section");
-
-      let paradeProgress = 0;
-      if (parade) {
-        const rect = parade.getBoundingClientRect();
-        const rawProgress = clamp(
-          (window.innerHeight * 1.42 - rect.top) / Math.max(window.innerHeight * 0.92, 1)
-        );
-        paradeProgress = 1 - Math.pow(1 - rawProgress, 2.6);
-      }
-
-      let possessionProgress = 0;
-      if (download) {
-        const rect = download.getBoundingClientRect();
-        possessionProgress = clamp((window.innerHeight * 0.82 - rect.top) / window.innerHeight);
-      }
-
-      setMotionVar("--hero-depth", heroDepth);
-      setMotionVar("--haunt-progress", hauntProgress);
-      setMotionVar("--parade-progress", paradeProgress);
-      setMotionVar("--possession-progress", possessionProgress);
+      sectionTimelines.forEach((timeline) => {
+        const { selector, property } = timeline;
+        setMotionVar(property, readSectionProgress(selector));
+      });
     };
 
     const requestUpdate = () => {
       if (frame) {
         return;
       }
-      frame = window.requestAnimationFrame(update);
+      frame = window.requestAnimationFrame(render);
     };
 
-    update();
+    requestUpdate();
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
     reduceMotion.addEventListener("change", requestUpdate);
@@ -124,7 +126,6 @@ function GhostGlyph({ className = "" }: { className?: string }) {
     <span className={`ghost-glyph ${className}`} aria-hidden="true">
       <span className="ghost-eye ghost-eye-left" />
       <span className="ghost-eye ghost-eye-right" />
-      <span className="ghost-cmd">&gt;_</span>
     </span>
   );
 }
@@ -135,14 +136,52 @@ function GhostFormation({ count = 28, className = "" }: { count?: number; classN
       {Array.from({ length: count }, (_, index) => {
         const row = Math.floor(index / 7);
         const col = index % 7;
+        const stagger = (row % 2) * 7;
+        const x = (col - 3) * 14 + stagger;
+        const y = row * 15;
+        const angle = (index / count) * Math.PI * 2 - Math.PI / 2;
+        const radius = 7.5 + (index % 3) * 2.1;
+        const ringX = Math.cos(angle) * radius;
+        const ringY = Math.sin(angle) * (radius * 0.74);
+        const innerX = Math.cos(angle + 0.72) * (radius * 0.38);
+        const innerY = Math.sin(angle + 0.72) * (radius * 0.26);
+        const pullX = -x;
+        const pullY = 47 - (12 + y);
+        const side = index % 8;
+        const verticalBand = -38 + ((index * 19) % 76);
+        const horizontalBand = -34 + ((index * 23) % 68);
+        const startX =
+          side === 0 || side === 5
+            ? -64
+            : side === 1 || side === 4
+              ? 64
+              : -44 + ((index * 17) % 88);
+        const startY =
+          side === 2 || side === 7
+            ? -58
+            : side === 3 || side === 6
+              ? 58
+              : verticalBand;
+        const midX = startX * 0.23 + Math.cos(angle) * 8;
+        const midY = startY * 0.2 + Math.sin(angle) * 6;
         return (
           <span
             className="formation-unit"
             key={index}
             style={
               {
-                "--x": `${(col - 3) * 14 + (row % 2) * 7}%`,
-                "--y": `${row * 15}%`,
+                "--x": `${x}%`,
+                "--y": `${y}%`,
+                "--pull-x": `${pullX}`,
+                "--pull-y": `${pullY}`,
+                "--ring-x": `${ringX}`,
+                "--ring-y": `${ringY}`,
+                "--inner-x": `${innerX}`,
+                "--inner-y": `${innerY}`,
+                "--start-x": `${startX}vw`,
+                "--start-y": `${startY}vh`,
+                "--mid-x": `${midX}vw`,
+                "--mid-y": `${midY}vh`,
                 "--scale": `${0.44 + row * 0.11}`,
                 "--delay": `${index * 0.12}s`
               } as React.CSSProperties
@@ -157,15 +196,10 @@ function GhostFormation({ count = 28, className = "" }: { count?: number; classN
 }
 
 function App() {
-  useScrollPossession();
+  useSectionTimelines();
 
   return (
     <main>
-      <div className="possession-field" aria-hidden="true">
-        <GhostGlyph className="possession-ghost possession-ghost-left" />
-        <GhostGlyph className="possession-ghost possession-ghost-center" />
-        <GhostGlyph className="possession-ghost possession-ghost-right" />
-      </div>
       <section className="hero" id="top">
         <GhostFormation className="hero-procession" count={35} />
         <nav className="nav" aria-label="Primary navigation">
@@ -277,11 +311,16 @@ Build complete`}</pre>
       </section>
 
       <section className="parade-section" aria-labelledby="parade-title">
-        <GhostFormation className="parade-procession" count={49} />
-        <div className="parade-pressers" aria-hidden="true">
-          <GhostGlyph className="parade-presser parade-presser-left" />
-          <GhostGlyph className="parade-presser parade-presser-center" />
-          <GhostGlyph className="parade-presser parade-presser-right" />
+        <GhostFormation className="parade-procession" count={28} />
+        <div className="parade-vortex" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className="parade-guide" aria-hidden="true">
+          <span />
+          <span />
+          <span />
         </div>
         <div className="parade-copy">
           <p className="kicker">百鬼终行</p>
