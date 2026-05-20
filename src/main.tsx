@@ -1,52 +1,217 @@
-import { StrictMode, useEffect } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 
-const features = [
-  {
-    title: "Workspace Orchestration",
-    command: "summon workspaces",
-    body: "Keep multiple development worlds alive without losing shell context."
-  },
-  {
-    title: "Split-first Layouts",
-    command: "split with intention",
-    body: "Compose panes like a disciplined terminal formation, not a loose stack of windows."
-  },
-  {
-    title: "Command History",
-    command: "trace every invocation",
-    body: "Index OSC-based command boundaries for search, recall, copy, and review."
-  },
-  {
-    title: "Shell Enhancements",
-    command: "enhance without losing control",
-    body: "Scan, preview, install, back up, and roll back shell tooling with explicit plans."
-  },
-  {
-    title: "AI CLI Companion",
-    command: "speak with your agents",
-    body: "Run Codex and Claude Code in terminal-native panes without surrendering the workflow."
-  },
-  {
-    title: "Pixel-aware Scrolling",
-    command: "move with precision",
-    body: "A modern terminal surface that treats the cell grid as a first-class instrument."
-  }
-];
+type Language = "en" | "zh";
 
-const capabilities = [
-  "Native macOS",
-  "Ghostty-inspired",
-  "libghostty-vt powered",
-  "PTY-based",
-  "OSC 133 aware",
-  "Split tree layout",
-  "Workspace persistent",
-  "AI CLI ready",
-  "Shell enhancement manager",
-  "Local-first history"
-];
+const DOWNLOAD_URL = "/ProGhostty-0.1.3-arm64.dmg";
+const REPOSITORY_URL = "https://github.com/freecodetiger/ProGhostty";
+
+const copy = {
+  en: {
+    htmlLang: "en",
+    title: "ProGhostty | Command the Night",
+    description:
+      "Download ProGhostty, a Ghostty-inspired macOS terminal for pixel-smooth scrolling, multi-split layouts, and persistent workspaces.",
+    nav: {
+      aria: "Primary navigation",
+      home: "ProGhostty home",
+      github: "Open ProGhostty on GitHub",
+      languageLabel: "Switch site language",
+      languageToggle: "中文"
+    },
+    hero: {
+      kicker: "Night Parade of Terminals",
+      line: "Command the Night.",
+      text:
+        "A Ghostty-inspired terminal for pixel-smooth scrolling, split formations, and persistent workspaces that remember where the work still lives.",
+      download: "Download for macOS",
+      github: "View on GitHub",
+      emblem: "ProGhostty ghost terminal emblem",
+      iconAlt: "ProGhostty app icon"
+    },
+    formation: {
+      kicker: "Ghost Formation",
+      title: "Three ways the night obeys.",
+      body:
+        "ProGhostty is built around uninterrupted flow: pixel-smooth motion, disciplined splits, and workspaces that keep their cwd and shape after you vanish.",
+      features: [
+        {
+          title: "Pixel-Level Scrolling",
+          command: "scroll like the web",
+          body:
+            "Move through terminal history with browser-smooth precision. No line-by-line rupture, no broken rhythm, only continuous command under your fingers."
+        },
+        {
+          title: "Multi-Split Surface",
+          command: "divide the night",
+          body:
+            "Editor, logs, builds, and agents stand in the same black field. Split the terminal into a formation that stays legible under pressure."
+        },
+        {
+          title: "Persistent Workspaces",
+          command: "return without loss",
+          body:
+            "Every workspace remembers its split tree and cwd. Leave the procession, return later, and the work is still breathing where you left it."
+        }
+      ]
+    },
+    workspace: {
+      kicker: "Workspace Mockup",
+      title: "One machine. Many ghosts.",
+      body: "Each workspace keeps its split tree and cwd intact, even after you leave.",
+      terminalLabel: "ProGhostty workspace terminal mockup",
+      titlebarStatus: "workspace2 · ~",
+      prompt: "user@MacBook-Air ~ %",
+      panes: {
+        primary: "pg workspace restore workspace2",
+        top: "cwd persisted: ~",
+        bottom: "split tree restored"
+      }
+    },
+    parade: {
+      kicker: "百鬼终行",
+      title: "Not a terminal. A procession.",
+      body: "Your sessions gather, persist, and obey."
+    },
+    foundation: {
+      kicker: "Technical Foundation",
+      title: "Ghostty speed. ProGhostty control.",
+      body:
+        "A native terminal experience built around correctness, workspace orchestration, and developer flow.",
+      status: "online",
+      capabilities: [
+        "Native macOS",
+        "Ghostty-inspired",
+        "libghostty-vt powered",
+        "PTY-based",
+        "OSC 133 aware",
+        "Split tree layout",
+        "Workspace persistent",
+        "AI CLI ready",
+        "Shell enhancement manager",
+        "Local-first history"
+      ],
+      diagnostic: `adapter: PTYTerminalEngine -> GhosttyVTBridge -> libghostty-vt
+history: OSC 133 / OSC 7 side-channel index
+state: local-first settings, workspaces, command blocks
+surface: split tree + workspace-aware sessions`
+    },
+    download: {
+      kicker: "Download",
+      title: "Enter the procession.",
+      body: "Download ProGhostty for macOS.",
+      download: "Download",
+      github: "GitHub",
+      docs: "Documentation"
+    }
+  },
+  zh: {
+    htmlLang: "zh-CN",
+    title: "ProGhostty | 驭夜而行",
+    description:
+      "下载 ProGhostty，一款 Ghostty-inspired macOS 终端，主打像素级丝滑滚动、多分屏布局和持久化工作区。",
+    nav: {
+      aria: "主导航",
+      home: "ProGhostty 首页",
+      github: "在 GitHub 打开 ProGhostty",
+      languageLabel: "切换网站语言",
+      languageToggle: "EN"
+    },
+    hero: {
+      kicker: "Night Parade of Terminals",
+      line: "驭夜而行。",
+      text:
+        "一款 Ghostty-inspired 终端：像网页一样丝滑的像素级滚动，多分屏列阵，以及记住 cwd 与布局的持久化工作区。",
+      download: "下载 macOS 版",
+      github: "查看 GitHub",
+      emblem: "ProGhostty 鬼形终端徽标",
+      iconAlt: "ProGhostty 应用图标"
+    },
+    formation: {
+      kicker: "Ghost Formation",
+      title: "三道令，夜色俯首。",
+      body:
+        "ProGhostty 为不中断的工作流而生：像素级丝滑滚动，克制而清晰的多分屏，以及在你离开后仍记住 cwd 与布局的工作区。",
+      features: [
+        {
+          title: "像素级滚动",
+          command: "scroll like the web",
+          body:
+            "穿过终端历史时像浏览网页一样连续、顺滑、精准。不再按行断裂，不再打碎节奏，手指所到之处皆可控。"
+        },
+        {
+          title: "多分屏工作面",
+          command: "divide the night",
+          body:
+            "编辑器、日志、构建与 Agent 同处一片黑色场域。把终端切成阵列，压力之下依然清晰可读。"
+        },
+        {
+          title: "持久化工作区",
+          command: "return without loss",
+          body:
+            "每个 workspace 都记住自己的分屏树和 cwd。离开之后再回来，工作仍停在原处，像还在呼吸。"
+        }
+      ]
+    },
+    workspace: {
+      kicker: "Workspace Mockup",
+      title: "一机百鬼。",
+      body: "每个 workspace 都保留自己的分屏树和 cwd，离开之后也不散场。",
+      terminalLabel: "ProGhostty workspace 终端示意",
+      titlebarStatus: "workspace2 · ~",
+      prompt: "user@MacBook-Air ~ %",
+      panes: {
+        primary: "pg workspace restore workspace2",
+        top: "cwd persisted: ~",
+        bottom: "split tree restored"
+      }
+    },
+    parade: {
+      kicker: "百鬼终行",
+      title: "不只是终端，是一场行列。",
+      body: "会话聚拢，状态长存，然后服从。"
+    },
+    foundation: {
+      kicker: "Technical Foundation",
+      title: "Ghostty 之速，ProGhostty 之控。",
+      body: "围绕正确性、workspace 编排和开发者心流打造的原生终端体验。",
+      status: "online",
+      capabilities: [
+        "原生 macOS",
+        "Ghostty-inspired",
+        "libghostty-vt powered",
+        "PTY-based",
+        "OSC 133 aware",
+        "Split tree layout",
+        "Workspace persistent",
+        "AI CLI ready",
+        "Shell enhancement manager",
+        "Local-first history"
+      ],
+      diagnostic: `adapter: PTYTerminalEngine -> GhosttyVTBridge -> libghostty-vt
+history: OSC 133 / OSC 7 side-channel index
+state: local-first settings, workspaces, command blocks
+surface: split tree + workspace-aware sessions`
+    },
+    download: {
+      kicker: "Download",
+      title: "进入百鬼行列。",
+      body: "下载 ProGhostty macOS 版。",
+      download: "下载",
+      github: "GitHub",
+      docs: "文档"
+    }
+  }
+} as const;
+
+function getInitialLanguage(): Language {
+  if (typeof window === "undefined") {
+    return "en";
+  }
+
+  return window.localStorage.getItem("proghostty-language") === "zh" ? "zh" : "en";
+}
 
 const sectionTimelines = [
   { selector: ".hero", property: "--hero-progress" },
@@ -130,6 +295,21 @@ function GhostGlyph({ className = "" }: { className?: string }) {
   );
 }
 
+function GitHubIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="github-mark"
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="currentColor"
+    >
+      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56v-2.15c-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .98-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.42.36.78 1.07.78 2.16v3.13c0 .31.21.67.8.56A11.52 11.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
+    </svg>
+  );
+}
+
 function GhostFormation({ count = 28, className = "" }: { count?: number; className?: string }) {
   return (
     <div className={`ghost-formation ${className}`} aria-hidden="true">
@@ -196,64 +376,89 @@ function GhostFormation({ count = 28, className = "" }: { count?: number; classN
 }
 
 function App() {
+  const [language, setLanguage] = useState<Language>(getInitialLanguage);
+  const text = copy[language];
+  const nextLanguage: Language = language === "en" ? "zh" : "en";
+
   useSectionTimelines();
+
+  useEffect(() => {
+    document.documentElement.lang = text.htmlLang;
+    document.title = text.title;
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute("content", text.description);
+    window.localStorage.setItem("proghostty-language", language);
+  }, [language, text.description, text.htmlLang, text.title]);
 
   return (
     <main>
       <section className="hero" id="top">
         <GhostFormation className="hero-procession" count={35} />
-        <nav className="nav" aria-label="Primary navigation">
-          <a className="brand" href="#top" aria-label="ProGhostty home">
+        <nav className="nav" aria-label={text.nav.aria}>
+          <a className="brand" href="#top" aria-label={text.nav.home}>
             <img src="/assets/proghostty-logo.png" alt="" />
             <span>ProGhostty</span>
           </a>
-          <div className="nav-links">
-            <a href="#features">Formation</a>
-            <a href="#foundation">Foundation</a>
-            <a href="#download">Download</a>
+          <div className="nav-actions">
+            <a
+              className="github-icon-link"
+              href={REPOSITORY_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={text.nav.github}
+            >
+              <GitHubIcon />
+            </a>
+            <button
+              className="language-toggle"
+              type="button"
+              aria-label={text.nav.languageLabel}
+              aria-pressed={language === "zh"}
+              onClick={() => setLanguage(nextLanguage)}
+            >
+              {text.nav.languageToggle}
+            </button>
           </div>
         </nav>
 
         <div className="hero-inner">
           <div className="hero-copy">
-            <p className="kicker">Night Parade of Terminals</p>
+            <p className="kicker">{text.hero.kicker}</p>
             <h1>ProGhostty</h1>
-            <p className="hero-line">Command the Night.</p>
-            <p className="hero-text">
-              A Ghostty-inspired terminal for workspaces, splits, AI CLI flows, and serious
-              command-line control.
-            </p>
+            <p className="hero-line">{text.hero.line}</p>
+            <p className="hero-text">{text.hero.text}</p>
             <div className="actions">
-              <a className="button button-primary" href="/ProGhostty-0.1.0-arm64.dmg" download>
-                Download for macOS
+              <a className="button button-primary" href={DOWNLOAD_URL} download>
+                {text.hero.download}
               </a>
               <a
                 className="button button-secondary"
-                href="https://github.com/freecodetiger/ProGhostty"
+                href={REPOSITORY_URL}
                 target="_blank"
                 rel="noreferrer"
               >
-                View on GitHub
+                {text.hero.github}
               </a>
             </div>
           </div>
 
-          <div className="totem-wrap" aria-label="ProGhostty ghost terminal emblem">
+          <div className="totem-wrap" aria-label={text.hero.emblem}>
             <div className="totem-shadow" />
-            <img className="totem" src="/assets/proghostty-logo.png" alt="ProGhostty app icon" />
+            <img className="totem" src="/assets/proghostty-logo.png" alt={text.hero.iconAlt} />
           </div>
         </div>
       </section>
 
       <section className="section formation-section" id="features">
         <div className="section-heading">
-          <p className="kicker">Ghost Formation</p>
-          <h2>Six panes of control.</h2>
-          <p>Every feature is a ghost in formation: quiet alone, overwhelming in concert.</p>
+          <p className="kicker">{text.formation.kicker}</p>
+          <h2>{text.formation.title}</h2>
+          <p>{text.formation.body}</p>
         </div>
         <div className="feature-grid">
-          {features.map((feature) => (
-            <article className="feature-card" key={feature.title}>
+          {text.formation.features.map((feature, index) => (
+            <article className={`feature-card feature-card-${index + 1}`} key={feature.title}>
               <GhostGlyph className="feature-ghost" />
               <p className="terminal-command">$ pg {feature.command}</p>
               <h3>{feature.title}</h3>
@@ -263,48 +468,36 @@ function App() {
         </div>
       </section>
 
-      <section className="section workspace-section">
+      <section className={`section workspace-section language-${language}`}>
         <div className="workspace-copy">
-          <p className="kicker">Workspace Mockup</p>
-          <h2>One machine. Many ghosts.</h2>
-          <p>Organize shells, logs, agents, and builds into persistent workspaces.</p>
+          <p className="kicker">{text.workspace.kicker}</p>
+          <h2>{text.workspace.title}</h2>
+          <p>{text.workspace.body}</p>
         </div>
-        <div className="terminal-window" aria-label="ProGhostty workspace terminal mockup">
+        <div className="terminal-window" aria-label={text.workspace.terminalLabel}>
           <div className="terminal-titlebar">
-            <span>workspace://release-night</span>
-            <span>4 panes alive</span>
+            <div className="window-controls" aria-hidden="true">
+              <span className="control-close" />
+              <span className="control-minimize" />
+              <span className="control-zoom" />
+            </div>
+            <span className="workspace-title">{text.workspace.titlebarStatus}</span>
           </div>
           <div className="terminal-grid">
             <div className="pane pane-large">
-              <p className="pane-label">editor</p>
-              <pre>{`> swift test --no-parallel
-Test Suite 'ProGhosttyCoreTests' started
-OscParserTests.commandBoundaries passed
-WorkspaceStoreTests.persistence passed
-CommandBlockIndexerTests.historyIndex passed
-
-> pg workspace focus release-night`}</pre>
+              <p className="prompt-line">
+                {text.workspace.prompt}
+                <span className="terminal-cursor" aria-hidden="true" />
+              </p>
+              <pre>{text.workspace.panes.primary}</pre>
             </div>
             <div className="pane">
-              <p className="pane-label">agent</p>
-              <pre>{`> codex
-watching app surface
-ready for patch review
-_`}</pre>
+              <p className="prompt-line">{text.workspace.prompt}</p>
+              <pre>{text.workspace.panes.top}</pre>
             </div>
             <div className="pane">
-              <p className="pane-label">logs</p>
-              <pre>{`[vt] bridge attached
-[pty] shell inherited
-[osc] cwd changed
-[pane] resize 42x132`}</pre>
-            </div>
-            <div className="pane">
-              <p className="pane-label">build</p>
-              <pre>{`> swift build
-Compile ProGhosttyCore
-Link ProGhostty
-Build complete`}</pre>
+              <p className="prompt-line">{text.workspace.prompt}</p>
+              <pre>{text.workspace.panes.bottom}</pre>
             </div>
           </div>
         </div>
@@ -323,58 +516,52 @@ Build complete`}</pre>
           <span />
         </div>
         <div className="parade-copy">
-          <p className="kicker">百鬼终行</p>
-          <h2 id="parade-title">Not a terminal. A procession.</h2>
-          <p>Your sessions gather, persist, and obey.</p>
+          <p className="kicker">{text.parade.kicker}</p>
+          <h2 id="parade-title">{text.parade.title}</h2>
+          <p>{text.parade.body}</p>
         </div>
       </section>
 
-      <section className="section foundation-section" id="foundation">
+      <section className={`section foundation-section language-${language}`} id="foundation">
         <div className="foundation-copy">
-          <p className="kicker">Technical Foundation</p>
-          <h2>Ghostty speed. ProGhostty control.</h2>
-          <p>
-            A native terminal experience built around correctness, workspace orchestration, and
-            developer flow.
-          </p>
+          <p className="kicker">{text.foundation.kicker}</p>
+          <h2>{text.foundation.title}</h2>
+          <p>{text.foundation.body}</p>
         </div>
         <div className="diagnostic-panel">
           <div className="diagnostic-header">
             <span>proghostty.system.capabilities</span>
-            <span>online</span>
+            <span>{text.foundation.status}</span>
           </div>
           <div className="capability-grid">
-            {capabilities.map((item) => (
+            {text.foundation.capabilities.map((item) => (
               <span key={item}>{item}</span>
             ))}
           </div>
-          <pre>{`adapter: PTYTerminalEngine -> GhosttyVTBridge -> libghostty-vt
-history: OSC 133 / OSC 7 side-channel index
-state: local-first settings, workspaces, command blocks
-surface: split tree + workspace-aware sessions`}</pre>
+          <pre>{text.foundation.diagnostic}</pre>
         </div>
       </section>
 
       <section className="download-section" id="download">
         <GhostFormation className="download-procession" count={21} />
         <img src="/assets/proghostty-logo.png" alt="" />
-        <p className="kicker">Download</p>
-        <h2>Enter the procession.</h2>
-        <p>Download ProGhostty for macOS.</p>
+        <p className="kicker">{text.download.kicker}</p>
+        <h2>{text.download.title}</h2>
+        <p>{text.download.body}</p>
         <div className="actions">
-          <a className="button button-primary" href="/ProGhostty-0.1.0-arm64.dmg" download>
-            Download
+          <a className="button button-primary" href={DOWNLOAD_URL} download>
+            {text.download.download}
           </a>
           <a
             className="button button-secondary"
-            href="https://github.com/freecodetiger/ProGhostty"
+            href={REPOSITORY_URL}
             target="_blank"
             rel="noreferrer"
           >
-            GitHub
+            {text.download.github}
           </a>
           <a className="button button-secondary" href="#foundation">
-            Documentation
+            {text.download.docs}
           </a>
         </div>
       </section>

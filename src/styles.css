@@ -142,34 +142,74 @@ main {
   box-shadow: 0 16px 40px var(--shadow-black);
 }
 
-.nav-links {
+.nav-actions {
   display: flex;
-  gap: 6px;
-  padding: 4px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.035);
-  backdrop-filter: blur(18px);
+  align-items: center;
+  gap: 8px;
 }
 
-.nav-links a {
+.github-icon-link {
   display: inline-flex;
   align-items: center;
-  min-height: 36px;
-  padding: 0 14px;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--border-subtle);
   border-radius: 999px;
-  color: var(--text-muted);
-  font-size: 13px;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(18px);
   transition:
+    transform 160ms ease,
+    border-color 160ms ease,
     background 160ms ease,
     color 160ms ease;
 }
 
-.nav-links a:hover,
-.nav-links a:focus-visible {
+.github-icon-link:hover,
+.github-icon-link:focus-visible {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.09);
   outline: none;
+  transform: translateY(-1px);
+}
+
+.github-mark {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.language-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.035);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0;
+  cursor: pointer;
+  backdrop-filter: blur(18px);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.language-toggle:hover,
+.language-toggle:focus-visible {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.09);
+  outline: none;
+  transform: translateY(-1px);
 }
 
 .hero-inner {
@@ -356,7 +396,7 @@ p {
 
 .section-heading {
   max-width: 760px;
-  margin-bottom: 34px;
+  margin-bottom: 52px;
 }
 
 .section-heading p {
@@ -366,15 +406,19 @@ p {
 
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+  grid-auto-rows: minmax(240px, auto);
+  gap: 18px;
 }
 
 .feature-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   min-height: 280px;
   overflow: hidden;
-  padding: 26px;
+  padding: 30px;
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   background:
@@ -390,12 +434,29 @@ p {
     scale(calc(0.985 + (var(--formation-progress) * 0.015)));
 }
 
+.feature-card-1 {
+  grid-row: span 2;
+  min-height: 560px;
+  padding: 42px;
+  background:
+    radial-gradient(circle at 78% 16%, rgba(245, 245, 247, 0.14), transparent 15rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.064), rgba(255, 255, 255, 0.016)),
+    #0d0d0f;
+}
+
 .feature-card:hover {
   transform: translateY(-3px);
   border-color: var(--border-strong);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.024)),
     var(--bg-panel);
+}
+
+.feature-card-1:hover {
+  background:
+    radial-gradient(circle at 78% 16%, rgba(245, 245, 247, 0.18), transparent 16rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.078), rgba(255, 255, 255, 0.022)),
+    #0d0d0f;
 }
 
 .feature-card p {
@@ -405,7 +466,7 @@ p {
 }
 
 .feature-card .terminal-command {
-  margin: 70px 0 0;
+  margin: 88px 0 0;
   color: var(--text-faint);
   font-family:
     "SF Mono",
@@ -414,6 +475,22 @@ p {
     Menlo,
     monospace;
   font-size: 12px;
+}
+
+.feature-card-1 .terminal-command {
+  margin-top: 0;
+}
+
+.feature-card-1 h3 {
+  max-width: 520px;
+  margin-top: 22px;
+  font-size: clamp(34px, 4.2vw, 58px);
+  line-height: 0.96;
+}
+
+.feature-card-1 p:not(.terminal-command) {
+  max-width: 590px;
+  font-size: 17px;
 }
 
 .ghost-glyph {
@@ -476,6 +553,17 @@ p {
   opacity: 0.34;
 }
 
+.feature-card-1 .feature-ghost {
+  top: 38px;
+  right: 40px;
+  opacity: 0.16;
+  transform: scale(2.48);
+}
+
+.feature-card-1:hover .feature-ghost {
+  opacity: 0.28;
+}
+
 .ghost-formation {
   position: absolute;
   inset: 0;
@@ -524,8 +612,8 @@ p {
 
 .workspace-section {
   display: grid;
-  grid-template-columns: minmax(240px, 0.62fr) minmax(0, 1.38fr);
-  gap: 28px;
+  grid-template-columns: minmax(220px, 0.48fr) minmax(0, 1.52fr);
+  gap: 38px;
   align-items: center;
   opacity: calc(0.36 + (var(--workspace-progress) * 0.64));
   transform: translateY(calc((1 - var(--workspace-progress)) * 24px));
@@ -541,51 +629,110 @@ p {
   font-size: clamp(42px, 5vw, 72px);
 }
 
+.language-zh .workspace-copy h2,
+.language-zh .foundation-copy h2 {
+  line-height: 1.04;
+  word-break: keep-all;
+}
+
 .terminal-window {
+  position: relative;
   overflow: hidden;
-  border: 1px solid var(--border-strong);
-  border-radius: 8px;
-  background: #070707;
+  min-height: 560px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  background: #181818;
   box-shadow:
-    0 48px 100px rgba(0, 0, 0, 0.66),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 52px 120px rgba(0, 0, 0, 0.72),
+    0 0 0 1px rgba(82, 140, 86, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
 }
 
 .terminal-titlebar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 46px;
-  padding: 0 16px;
-  border-bottom: 1px solid var(--border-subtle);
-  color: var(--text-faint);
+  min-height: 56px;
+  padding: 0 18px 0 16px;
+  color: rgba(241, 241, 243, 0.78);
   font-family:
     "SF Mono",
     Menlo,
     monospace;
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.window-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.window-controls span {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+
+.control-close {
+  background: #ff5f57;
+}
+
+.control-minimize {
+  background: #ffbd4c;
+}
+
+.control-zoom {
+  background: #28c840;
+}
+
+.workspace-title {
+  font-family:
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    sans-serif;
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 800;
+  letter-spacing: 0;
 }
 
 .terminal-grid {
   display: grid;
-  grid-template-columns: 1.35fr 0.9fr;
-  grid-template-rows: repeat(3, minmax(128px, 1fr));
-  min-height: 530px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: repeat(2, minmax(220px, 1fr));
+  min-height: 504px;
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
 }
 
 .pane {
   position: relative;
   overflow: hidden;
-  padding: 22px;
-  border-right: 1px solid var(--border-subtle);
-  border-bottom: 1px solid var(--border-subtle);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
-    #070707;
+  padding: 30px;
+  background: #181818;
+}
+
+.pane::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 42%);
+}
+
+.pane:nth-child(1) {
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.pane:nth-child(2) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .pane-large {
-  grid-row: span 3;
+  grid-row: span 2;
 }
 
 .pane-label {
@@ -599,10 +746,30 @@ p {
   text-transform: uppercase;
 }
 
-pre {
+.prompt-line {
+  position: relative;
+  z-index: 1;
   margin: 0;
+  color: rgba(241, 241, 243, 0.88);
+  font-family:
+    "SF Mono",
+    "JetBrains Mono",
+    "Berkeley Mono",
+    Menlo,
+    monospace;
+  font-size: clamp(20px, 2.12vw, 31px);
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+pre {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  margin-top: 18px;
   white-space: pre-wrap;
-  color: var(--text-main);
+  color: rgba(241, 241, 243, 0.5);
   font-family:
     "SF Mono",
     "JetBrains Mono",
@@ -613,14 +780,13 @@ pre {
   line-height: 1.7;
 }
 
-.pane pre::after {
+.terminal-cursor {
   display: inline-block;
-  width: 8px;
-  height: 18px;
-  margin-left: 4px;
-  vertical-align: -4px;
-  content: "";
-  background: var(--accent-cold);
+  width: 20px;
+  height: 36px;
+  margin-left: 16px;
+  vertical-align: -8px;
+  background: rgba(241, 241, 243, 0.9);
   animation: cursor-blink 1.35s steps(2, end) infinite;
 }
 
@@ -1032,6 +1198,12 @@ pre {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .feature-card-1 {
+    grid-column: span 2;
+    grid-row: auto;
+    min-height: 420px;
+  }
+
   .workspace-copy,
   .foundation-copy {
     max-width: 700px;
@@ -1044,11 +1216,15 @@ pre {
   }
 
   .nav {
-    align-items: flex-start;
+    align-items: center;
   }
 
-  .nav-links {
-    display: none;
+  .github-icon-link,
+  .language-toggle {
+    width: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0 12px;
   }
 
   .hero-inner {
@@ -1094,11 +1270,41 @@ pre {
     padding: 22px;
   }
 
+  .feature-card-1 {
+    grid-column: auto;
+    min-height: 360px;
+    padding: 28px;
+  }
+
+  .feature-card-1 h3 {
+    font-size: 36px;
+  }
+
+  .feature-card-1 p:not(.terminal-command) {
+    font-size: 16px;
+  }
+
+  .terminal-window {
+    min-height: auto;
+    border-radius: 12px;
+  }
+
   .terminal-titlebar {
-    align-items: flex-start;
-    flex-direction: column;
-    justify-content: center;
-    padding: 12px 14px;
+    min-height: 46px;
+    padding: 0 12px;
+  }
+
+  .window-controls {
+    gap: 8px;
+  }
+
+  .window-controls span {
+    width: 14px;
+    height: 14px;
+  }
+
+  .workspace-title {
+    font-size: 13px;
   }
 
   .terminal-grid {
@@ -1111,9 +1317,25 @@ pre {
     grid-row: auto;
   }
 
+  .pane:nth-child(1) {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
   .pane {
-    min-height: 170px;
+    min-height: 156px;
     padding: 18px;
+  }
+
+  .prompt-line {
+    font-size: 15px;
+  }
+
+  .terminal-cursor {
+    width: 12px;
+    height: 22px;
+    margin-left: 8px;
+    vertical-align: -5px;
   }
 
   pre {
