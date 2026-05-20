@@ -148,7 +148,7 @@ main {
   gap: 8px;
 }
 
-.github-icon-link {
+.nav-icon-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -166,8 +166,8 @@ main {
     color 160ms ease;
 }
 
-.github-icon-link:hover,
-.github-icon-link:focus-visible {
+.nav-icon-link:hover,
+.nav-icon-link:focus-visible {
   color: var(--text-main);
   border-color: var(--border-strong);
   background: rgba(255, 255, 255, 0.09);
@@ -175,7 +175,8 @@ main {
   transform: translateY(-1px);
 }
 
-.github-mark {
+.github-mark,
+.deepwiki-mark {
   display: block;
   width: 20px;
   height: 20px;
@@ -1219,12 +1220,17 @@ pre {
     align-items: center;
   }
 
-  .github-icon-link,
+  .nav-icon-link,
   .language-toggle {
     width: 40px;
     min-width: 40px;
     min-height: 40px;
     padding: 0 12px;
+  }
+
+  .language-toggle {
+    width: auto;
+    min-width: 54px;
   }
 
   .hero-inner {

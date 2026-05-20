@@ -6,6 +6,7 @@ type Language = "en" | "zh";
 
 const DOWNLOAD_URL = "/ProGhostty-0.1.3-arm64.dmg";
 const REPOSITORY_URL = "https://github.com/freecodetiger/ProGhostty";
+const DOCUMENTATION_URL = "https://deepwiki.com/freecodetiger/ProGhostty";
 
 const copy = {
   en: {
@@ -17,6 +18,7 @@ const copy = {
       aria: "Primary navigation",
       home: "ProGhostty home",
       github: "Open ProGhostty on GitHub",
+      deepwiki: "Open ProGhostty documentation on DeepWiki",
       languageLabel: "Switch site language",
       languageToggle: "中文"
     },
@@ -115,6 +117,7 @@ surface: split tree + workspace-aware sessions`
       aria: "主导航",
       home: "ProGhostty 首页",
       github: "在 GitHub 打开 ProGhostty",
+      deepwiki: "在 DeepWiki 打开 ProGhostty 文档",
       languageLabel: "切换网站语言",
       languageToggle: "EN"
     },
@@ -310,6 +313,27 @@ function GitHubIcon() {
   );
 }
 
+function DeepWikiIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="deepwiki-mark"
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+    >
+      <path
+        d="M5 5.5c0-1.1.9-2 2-2h10.5c.83 0 1.5.67 1.5 1.5v14.5c0 .55-.45 1-1 1H7a2 2 0 0 1-2-2v-13Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+      />
+      <path d="M8 7h7.5M8 10.25h8M8 13.5h5.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M7 17.5h11.25" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
+  );
+}
+
 function GhostFormation({ count = 28, className = "" }: { count?: number; className?: string }) {
   return (
     <div className={`ghost-formation ${className}`} aria-hidden="true">
@@ -402,13 +426,22 @@ function App() {
           </a>
           <div className="nav-actions">
             <a
-              className="github-icon-link"
+              className="nav-icon-link"
               href={REPOSITORY_URL}
               target="_blank"
               rel="noreferrer"
               aria-label={text.nav.github}
             >
               <GitHubIcon />
+            </a>
+            <a
+              className="nav-icon-link"
+              href={DOCUMENTATION_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={text.nav.deepwiki}
+            >
+              <DeepWikiIcon />
             </a>
             <button
               className="language-toggle"
@@ -560,7 +593,12 @@ function App() {
           >
             {text.download.github}
           </a>
-          <a className="button button-secondary" href="#foundation">
+          <a
+            className="button button-secondary"
+            href={DOCUMENTATION_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
             {text.download.docs}
           </a>
         </div>
