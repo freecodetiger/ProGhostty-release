@@ -4,7 +4,7 @@ import "./styles.css";
 
 type Language = "en" | "zh";
 
-const DOWNLOAD_URL = "/ProGhostty-0.2.0-arm64.dmg";
+const DOWNLOAD_URL = "/ProGhostty-0.4.3-arm64.dmg";
 const REPOSITORY_URL = "https://github.com/freecodetiger/ProGhostty";
 const DOCUMENTATION_URL = "https://deepwiki.com/freecodetiger/ProGhostty";
 
